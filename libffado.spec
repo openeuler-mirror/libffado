@@ -5,17 +5,20 @@ export LDFLAGS="%{build_ldflags}"
 
 Name:           libffado
 Version:        2.4.1
-Release:        5
+Release:        6
 Summary:        Free firewire audio driver library
 License:        LGPLv2+ and GPLv2 and GPLv3 and GPLv3+
 URL:            http://www.ffado.org/
 Source0:        http://www.ffado.org/files/%{name}-%{version}.tgz
 Source1:        libffado-snapshot.sh
 
-BuildRequires:  alsa-lib-devel dbus-c++-devel dbus-devel python2-dbus desktop-file-utils doxygen  gcc-c++ glibmm24-devel
+Patch0:         0001-fix-the-AttributeError-module-posixpath-has-no-attribute-walk.patch
+Patch1:         0001-fix-TypeError-must-be-str-or-None-not-bytes.patch 
+
+BuildRequires:  alsa-lib-devel dbus-c++-devel dbus-devel python3-dbus desktop-file-utils doxygen  gcc-c++ glibmm24-devel
 BuildRequires:  graphviz libappstream-glib libconfig-devel libiec61883-devel libraw1394-devel libxml++-devel pkgconfig
-BuildRequires:  python2-PyQt5-devel python2-devel python2-enum34 python2-scons subversion
-Requires:       udev dbus python2-dbus python2-qt5
+BuildRequires:  python3-qt5-devel python3-devel python3-enum34 python3-scons subversion
+Requires:       udev dbus python3-dbus python3-qt5
 
 Provides:       ffado = %{version}-%{release}
 Obsoletes:      ffado < %{version}-%{release}
@@ -43,19 +46,19 @@ The libffado-help package conatins manual pages for libffado.
 
 sed -i '/Install/d' tests/{,*/}SConscript
 sed -i 's|hi64-apps-ffado.png|ffado.png|' support/mixer-qt4/ffado/ffadowindow.py
-sed -i 's|/usr/bin/.*python$|/usr/bin/python2|' admin/*.py doc/SConscript tests/python/*.py tests/*.py \
+sed -i 's|/usr/bin/.*python$|/usr/bin/python3|' admin/*.py doc/SConscript tests/python/*.py tests/*.py \
     support/mixer-qt4/ffado-mixer* support/mixer-qt4/SConscript support/tools/*.py support/tools/SConscript
 
 %build
 %{_export_PLAGS}
-scons %{?_smp_mflags} \
+scons-3 %{?_smp_mflags} \
             ENABLE_SETBUFFERSIZE_API_VER=True ENABLE_OPTIMIZATIONS=True CUSTOM_ENV=True BUILD_DOC=user \
             PREFIX=%{_prefix} LIBDIR=%{_libdir} MANDIR=%{_mandir} UDEVDIR=%{_prefix}/lib/udev/rules.d/ \
-            PYPKGDIR=%{python_sitelib}/ffado/ PYTHON_INTERPRETER=/usr/bin/python2 BUILD_TESTS=1
+            PYPKGDIR=%{python3_sitelib}/ffado/ PYTHON_INTERPRETER=/usr/bin/python3 BUILD_TESTS=1
 
 %install
 %{_export_PLAGS}
-scons DESTDIR=%{buildroot} install
+scons-3 DESTDIR=%{buildroot} install
 
 install -d %{buildroot}%{_datadir}/applications
 desktop-file-install --dir %{buildroot}%{_datadir}/applications --add-category="Settings"  --set-icon=ffado  support/xdg/ffado.org-ffadomixer.desktop
@@ -86,7 +89,7 @@ appstream-util validate-relax --nonet  %{buildroot}%{_datadir}/metainfo/ffado-mi
 %{_datadir}/applications/ffado.org-ffadomixer.desktop
 %{_datadir}/icons/hicolor/64x64/apps/ffado.png
 %{_datadir}/metainfo/ffado-mixer.appdata.xml
-%{python_sitelib}/ffado/
+%{python3_sitelib}/ffado/
 
 %files devel
 %doc doc/reference/html/
@@ -99,5 +102,8 @@ appstream-util validate-relax --nonet  %{buildroot}%{_datadir}/metainfo/ffado-mi
 %{_mandir}/man1/ffado-*.1*
 
 %changelog
+* Tue Oct 13 2020 maminjie <maminjie1@huawei.com> - 2.4.1-6
+- Rebuilt for python3
+
 * Tue Dec 03 2019 liujing<liujing144@huawei.com> - 2.4.1-5
 - Package init
