@@ -5,7 +5,7 @@ export LDFLAGS="%{build_ldflags}"
 
 Name:           libffado
 Version:        2.4.1
-Release:        6
+Release:        7
 Summary:        Free firewire audio driver library
 License:        LGPLv2+ and GPLv2 and GPLv3 and GPLv3+
 URL:            http://www.ffado.org/
@@ -14,6 +14,9 @@ Source1:        libffado-snapshot.sh
 
 Patch0:         0001-fix-the-AttributeError-module-posixpath-has-no-attribute-walk.patch
 Patch1:         0001-fix-TypeError-must-be-str-or-None-not-bytes.patch 
+%ifarch riscv64
+Patch2:		0002-upgrade-config-guess.patch
+%endif
 
 BuildRequires:  alsa-lib-devel dbus-c++-devel dbus-devel python3-dbus desktop-file-utils doxygen  gcc-c++ glibmm24-devel
 BuildRequires:  graphviz libappstream-glib libconfig-devel libiec61883-devel libraw1394-devel libxml++-devel pkgconfig
@@ -102,6 +105,9 @@ appstream-util validate-relax --nonet  %{buildroot}%{_datadir}/metainfo/ffado-mi
 %{_mandir}/man1/ffado-*.1*
 
 %changelog
+* Wed Feb 23 2022 YukariChiba <i@0x7f.cc> - 2.4.1-7
+- Upgrade config.guess to support RISC-V
+
 * Tue Oct 13 2020 maminjie <maminjie1@huawei.com> - 2.4.1-6
 - Rebuilt for python3
 
