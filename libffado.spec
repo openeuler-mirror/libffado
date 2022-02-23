@@ -5,7 +5,7 @@ export LDFLAGS="%{build_ldflags}"
 
 Name:           libffado
 Version:        2.4.1
-Release:        7
+Release:        8
 Summary:        Free firewire audio driver library
 License:        LGPLv2+ and GPLv2 and GPLv3 and GPLv3+
 URL:            http://www.ffado.org/
@@ -14,9 +14,6 @@ Source1:        libffado-snapshot.sh
 
 Patch0:         0001-fix-the-AttributeError-module-posixpath-has-no-attribute-walk.patch
 Patch1:         0001-fix-TypeError-must-be-str-or-None-not-bytes.patch 
-%ifarch riscv64
-Patch2:		0002-upgrade-config-guess.patch
-%endif
 
 BuildRequires:  alsa-lib-devel dbus-c++-devel dbus-devel python3-dbus desktop-file-utils doxygen  gcc-c++ glibmm24-devel
 BuildRequires:  graphviz libappstream-glib libconfig-devel libiec61883-devel libraw1394-devel libxml++-devel pkgconfig
@@ -46,7 +43,9 @@ The libffado-help package conatins manual pages for libffado.
 
 %prep
 %autosetup -p1
-
+%ifarch riscv64
+cp /usr/lib/rpm/config.guess admin/config.guess
+%endif
 sed -i '/Install/d' tests/{,*/}SConscript
 sed -i 's|hi64-apps-ffado.png|ffado.png|' support/mixer-qt4/ffado/ffadowindow.py
 sed -i 's|/usr/bin/.*python$|/usr/bin/python3|' admin/*.py doc/SConscript tests/python/*.py tests/*.py \
@@ -105,6 +104,9 @@ appstream-util validate-relax --nonet  %{buildroot}%{_datadir}/metainfo/ffado-mi
 %{_mandir}/man1/ffado-*.1*
 
 %changelog
+* Wed Feb 23 2022 YukariChiba <i@0x7f.cc> - 2.4.1-8
+- Switch to use local config.guess from rpm package when building in RISC-V
+
 * Wed Feb 23 2022 YukariChiba <i@0x7f.cc> - 2.4.1-7
 - Upgrade config.guess to support RISC-V
 
