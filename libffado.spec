@@ -4,16 +4,13 @@ export CXXFLAGS="%{optflags} -ffast-math --std=gnu++11" \
 export LDFLAGS="%{build_ldflags}"
 
 Name:           libffado
-Version:        2.4.1
-Release:        8
+Version:        2.4.5
+Release:        1
 Summary:        Free firewire audio driver library
 License:        LGPLv2+ and GPLv2 and GPLv3 and GPLv3+
 URL:            http://www.ffado.org/
 Source0:        http://www.ffado.org/files/%{name}-%{version}.tgz
 Source1:        libffado-snapshot.sh
-
-Patch0:         0001-fix-the-AttributeError-module-posixpath-has-no-attribute-walk.patch
-Patch1:         0001-fix-TypeError-must-be-str-or-None-not-bytes.patch 
 
 BuildRequires:  alsa-lib-devel dbus-c++-devel dbus-devel python3-dbus desktop-file-utils doxygen  gcc-c++ glibmm24-devel
 BuildRequires:  graphviz libappstream-glib libconfig-devel libiec61883-devel libraw1394-devel libxml++-devel pkgconfig
@@ -104,6 +101,9 @@ appstream-util validate-relax --nonet  %{buildroot}%{_datadir}/metainfo/ffado-mi
 %{_mandir}/man1/ffado-*.1*
 
 %changelog
+* Fri Apr 1 2022 YukariChiba <i@0x7f.cc> - 2.4.5-1
+- Upgrade version to 2.4.5
+
 * Wed Feb 23 2022 YukariChiba <i@0x7f.cc> - 2.4.1-8
 - Switch to use local config.guess from rpm package when building in RISC-V
 
